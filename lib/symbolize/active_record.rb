@@ -95,7 +95,7 @@ module Symbolize
             values.each do |value|
               key = value[0]
               define_method("#{key}?") do
-                self[attr_name] == key
+                self.send(attr_name) == key
               end
             end
           end
