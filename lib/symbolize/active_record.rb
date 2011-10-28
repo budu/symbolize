@@ -140,10 +140,10 @@ module Symbolize
         end
         if i18n
           class_eval("def #{attr_name}_text; self.class.read_i18n_attribute(#{attr_name.to_s.upcase}_KEYS, '#{attr_name}', read_attribute('#{attr_name}')); end")
-          class_eval("def self.#{attr_name}_options; #{attr_name.to_s.upcase}_VALUES.map {|k,v| [read_i18n_attribute(#{attr_name.to_s.upcase}_KEYS, '#{attr_name}', v), v]}; end")
+          class_eval("def self.#{attr_name}_options; #{attr_name.to_s.upcase}_VALUES.map {|k,v| [read_i18n_attribute(#{attr_name.to_s.upcase}_KEYS, '#{attr_name}', v), k]}; end")
         else
           class_eval("def #{attr_name}_text; #{attr_name}.to_s; end")
-          class_eval("def self.#{attr_name}_options; #{attr_name.to_s.upcase}_VALUES.map {|k,v| [#{attr_name}.to_s, v]}; end")
+          class_eval("def self.#{attr_name}_options; #{attr_name.to_s.upcase}_VALUES.map {|k,v| [#{attr_name}.to_s, k]}; end")
         end
       end
     end
