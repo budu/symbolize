@@ -150,7 +150,7 @@ module Symbolize
 
     # Return an attribute's i18n
     def read_i18n_attribute keys_by_values, attr_name, value
-      attr = keys_by_values[value]
+      attr = value.is_a?(String) ? keys_by_values[value] : value
       return nil if attr.nil?
       I18n.translate("activerecord.attributes.#{ActiveSupport::Inflector.underscore(self)}.#{attr_name}/#{attr}")
     end
