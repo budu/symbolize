@@ -139,7 +139,7 @@ module Symbolize
           class_eval("def #{attr_name}= (value); write_symbolized_attribute('#{attr_name}', #{attr_name.to_s.upcase}_VALUES[value]); end")
         end
         if i18n
-          class_eval("def #{attr_name}_text; read_i18n_attribute(#{attr_name.to_s.upcase}_KEYS, '#{attr_name}', read_attribute('#{attr_name}')); end")
+          class_eval("def #{attr_name}_text; self.class.read_i18n_attribute(#{attr_name.to_s.upcase}_KEYS, '#{attr_name}', read_attribute('#{attr_name}')); end")
           class_eval("def self.#{attr_name}_options; #{attr_name.to_s.upcase}_VALUES.map {|k,v| [read_i18n_attribute(#{attr_name.to_s.upcase}_KEYS, '#{attr_name}', v), v]}; end")
         else
           class_eval("def #{attr_name}_text; #{attr_name}.to_s; end")
