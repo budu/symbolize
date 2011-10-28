@@ -139,11 +139,20 @@ module Symbolize
           class_eval("def #{attr_name}= (value); write_symbolized_attribute('#{attr_name}', #{attr_name.to_s.upcase}_VALUES[value]); end")
         end
         if i18n
-          class_eval("def #{attr_name}_text; read_i18n_attribute(#{attr_name.to_s.upcase}_KEYS, '#{attr_name}'); end")
+          class_eval("def #{attr_name}_text; read_i18n_attribute(#{attr_name.to_s.upcase}_KEYS, '#{attr_name}', read_attribute('#{attr_name}')); end")
+          class_eval("def self.#{attr_name}_options; #{attr_name.to_s.upcase}_VALUES.map {|k,v| [read_i18n_attribute(#{attr_name.to_s.upcase}_KEYS, '#{attr_name}', v), v]}; end")
         else
           class_eval("def #{attr_name}_text; #{attr_name}.to_s; end")
+          class_eval("def self.#{attr_name}_options; #{attr_name.to_s.upcase}_VALUES.map {|k,v| [#{attr_name}.to_s, v]}; end")
         end
       end
+    end
+
+    # Return an attribute's i18n
+    def read_i18n_attribute keys_by_values, attr_name, value
+      attr = keys_by_values[value]
+      return nil if attr.nil?
+      I18n.translate("activerecord.attributes.#{ActiveSupport::Inflector.underscore(self)}.#{attr_name}/#{attr}")
     end
   end
 
@@ -161,12 +170,6 @@ module Symbolize
     symbolize_attribute keys_by_values, self[attr_name]
   end
 
-  # Return an attribute's i18n
-  def read_i18n_attribute keys_by_values, attr_name
-    attr = keys_by_values[read_attribute(attr_name)]
-    return nil if attr.nil?
-    I18n.translate("activerecord.attributes.#{ActiveSupport::Inflector.underscore(self.class)}.#{attr_name}/#{attr}")
-  end
 
   # Write a symbolized value. Watch out for booleans.
   def write_symbolized_attribute attr_name, value
