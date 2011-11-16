@@ -56,7 +56,6 @@ module Symbolize
       scopes  = configuration.delete :scopes
       methods = configuration.delete :methods
       capitalize = configuration.delete :capitalize
-      validation     = configuration.delete(:validation) != false
       default_option = configuration.delete :default
 
       unless enum.nil?
@@ -115,14 +114,6 @@ module Symbolize
                 end
               end
             end
-          end
-
-          if validation
-            validation = "validates_inclusion_of :#{attr_names.join(', :')}"
-            validation += ", :in => #{values.keys.inspect}"
-            validation += ", :allow_nil => true" if configuration[:allow_nil]
-            validation += ", :allow_blank => true" if configuration[:allow_blank]
-            class_eval validation
           end
         end
       end
